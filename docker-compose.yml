@@ -1,0 +1,49 @@
+version: '3.7'
+services:
+  taco-api:
+    # image: golang:1.12.5
+    # command: make dev
+    build:
+      context: .
+      dockerfile: taco/Dockerfile 
+    image: taco-api
+    ports:
+      - 8080:8080
+    volumes:
+      - ./taco:/usr/src/app/
+    depends_on:
+      - taco-db
+      - taco-redis
+    networks:
+      - ci-taco
+    entrypoint: /usr/src/app/dev-entrypoint.sh
+  taco-db:
+    image: postgres:11.3-alpine
+    volumes:
+      - taco-db-data:/var/lib/postgresql/data/pgdata
+    ports:
+      - 5431:5432
+    environment:
+      POSTGRES_PASSWORD: pass1234   # TODO: make these in env file
+      POSTGRES_DB: taco
+      POSTGRES_USER: taco
+      PGDATA: /var/lib/postgresql/data/pgdata
+    networks:
+      - ci-taco
+  taco-redis:
+    image: redis:4-alpine
+    volumes:
+      - ./data/config/redis.conf:/usr/local/etc/redis/redis.conf
+      - taco-redis-data:/data
+    ports:
+      - 6379:6379
+    command: redis-server /usr/local/etc/redis/redis.conf
+    networks:
+      - ci-taco
+networks:
+  ci-taco:
+    driver: bridge
+
+volumes:
+  taco-db-data:  # taco db
+  taco-redis-data:  # taco cache

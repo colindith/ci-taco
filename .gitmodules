@@ -1,3 +1,6 @@
 [submodule "taco"]
 	path = taco
 	url = https://github.com/colindith/taco.git
+[submodule "kumo"]
+	path = kumo
+	url = https://github.com/colindith/kumo.git

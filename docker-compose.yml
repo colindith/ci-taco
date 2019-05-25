@@ -52,6 +52,38 @@ services:
     ports:
       - "5671:5672"
       - "15671:15672"
+  kumo-api:
+    build:
+      context: .
+      dockerfile: kumo/Dockerfile 
+    image: kumo-api
+    ports:
+      - 8001:8001
+    volumes:
+      - ./kumo:/usr/src/app/
+    # depends_on:
+    #   - kumo-db
+    #   - kumo-redis
+    networks:
+      - ci-taco
+    env_file:
+      - .env
+    entrypoint: /usr/src/app/dev-entrypoint.sh
+  kumo-worker:
+    build:
+      context: .
+      dockerfile: taco/Dockerfile 
+    image: kumo-worker
+    volumes:
+      - ./kumo:/usr/src/app/
+    # depends_on:
+    #   - kumo-db
+    #   - kumo-redis
+    networks:
+      - ci-taco
+    env_file:
+      - .env
+    entrypoint: /usr/src/app/worker-entrypoint.sh
 networks:
   ci-taco:
     driver: bridge

@@ -1,0 +1,11 @@
+version: '3.7'
+services:
+  keplan:
+    image: node:10-alpine
+    working_dir: /usr/src/app
+    volumes:
+      - ./keplan:/usr/src/app
+      - ./nginx/keplan-dist:/usr/src/app/dist
+    command: sh -c "yarn install && yarn run build"
+    env_file:
+      - .env

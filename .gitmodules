@@ -4,3 +4,6 @@
 [submodule "kumo"]
 	path = kumo
 	url = https://github.com/colindith/kumo.git
+[submodule "keplan"]
+	path = keplan
+	url = https://github.com/colindith/keplan.git

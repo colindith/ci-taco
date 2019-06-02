@@ -1,8 +1,6 @@
 version: '3.7'
 services:
   taco-api:
-    # image: golang:1.12.5
-    # command: make dev
     build:
       context: .
       dockerfile: taco/Dockerfile 
@@ -84,6 +82,14 @@ services:
     env_file:
       - .env
     entrypoint: /usr/src/app/worker-entrypoint.sh
+  nginx:
+    restart: always
+    image: nginx:1.11.6-alpine
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/keplan-dist:/usr/src/app/keplan
+    ports:
+      - 8888:8888 # keplan
 networks:
   ci-taco:
     driver: bridge

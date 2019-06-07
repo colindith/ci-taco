@@ -59,14 +59,27 @@ services:
       - 8001:8001
     volumes:
       - ./kumo:/usr/src/app/
-    # depends_on:
-    #   - kumo-db
+    depends_on:
+      - kumo-db
     #   - kumo-redis
     networks:
       - ci-taco
     env_file:
       - .env
     entrypoint: /usr/src/app/dev-entrypoint.sh
+  kumo-db:
+    image: postgres:11.3-alpine
+    volumes:
+      - kumo-db-data:/var/lib/postgresql/data/pgdata
+    ports:
+      - 5430:5432
+    environment:
+      POSTGRES_PASSWORD: pass1234   # TODO: make these in env file
+      POSTGRES_DB: kumo
+      POSTGRES_USER: kumo
+      PGDATA: /var/lib/postgresql/data/pgdata
+    networks:
+      - ci-taco
   kumo-worker:
     build:
       context: .
@@ -97,3 +110,4 @@ networks:
 volumes:
   taco-db-data:  # taco db
   taco-redis-data:  # taco cache
+  kumo-db-data:  # kumo db

@@ -8,7 +8,7 @@ services:
     ports:
       - 8000:8000
     volumes:
-      - ./taco:/usr/src/app/
+      - ./taco:/go/src/taco/
     depends_on:
       - taco-db
       - taco-redis
@@ -16,7 +16,6 @@ services:
       - ci-taco
     env_file:
       - .env
-    entrypoint: /usr/src/app/dev-entrypoint.sh
   taco-db:
     image: postgres:11.3-alpine
     volumes:
@@ -50,6 +49,21 @@ services:
     ports:
       - "5671:5672"
       - "15671:15672"
+  taco-worker-consumer:
+    build:
+      context: .
+      dockerfile: taco/Dockerfile 
+    image: taco-worker-consumer
+    volumes:
+      - ./taco:/go/src/taco/
+    # depends_on:
+    #   - taco-db
+    #   - taco-redis
+    networks:
+      - ci-taco
+    env_file:
+      - .env
+    entrypoint: [ "make", "kumo_broker" ]
   kumo-api:
     build:
       context: .
@@ -58,7 +72,7 @@ services:
     ports:
       - 8001:8001
     volumes:
-      - ./kumo:/usr/src/app/
+      - ./kumo:/go/src/kumo/
     depends_on:
       - kumo-db
     #   - kumo-redis
@@ -66,7 +80,6 @@ services:
       - ci-taco
     env_file:
       - .env
-    entrypoint: /usr/src/app/dev-entrypoint.sh
   kumo-db:
     image: postgres:11.3-alpine
     volumes:
@@ -83,10 +96,10 @@ services:
   kumo-worker:
     build:
       context: .
-      dockerfile: taco/Dockerfile 
+      dockerfile: kumo/Dockerfile 
     image: kumo-worker
     volumes:
-      - ./kumo:/usr/src/app/
+      - ./kumo:/go/src/kumo/
     # depends_on:
     #   - kumo-db
     #   - kumo-redis
@@ -94,7 +107,7 @@ services:
       - ci-taco
     env_file:
       - .env
-    entrypoint: /usr/src/app/worker-entrypoint.sh
+    entrypoint: [ "make", "worker" ]
   nginx:
     restart: always
     image: nginx:1.11.6-alpine

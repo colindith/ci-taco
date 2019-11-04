@@ -9,8 +9,8 @@
 7. Using Vue as front-end
 
 ## Quick Start
-1. build front-end project (Keplan)
+1. build the front-end project (Keplan)<br />
 `docker-compose -f dev-frontend.yml up`
-2. build & run back-end project (Taco & Kuma)
+2. build & run the back-end project (Taco & Kuma)<br />
 `docker-compose -f dev-backend.yml up -d`
-3. Run http://localhost:8080
+3. Run http://localhost:8080<br />
